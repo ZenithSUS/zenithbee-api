@@ -1,0 +1,25 @@
+{
+  "name": "zenithbee-api",
+  "version": "1.0.0",
+  "description": "This is the ZenithBee API to make the app dynamic",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --env-file=.env server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "API",
+    "Dynamic",
+    "AI",
+    "CRUD"
+  ],
+  "author": "ZenithSUS",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "node-appwrite": "^11.1.1"
+  }
+}
