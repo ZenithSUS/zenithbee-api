@@ -27,14 +27,15 @@ export const getProducts = async () => {
         PRODUCT_ID,
         [Query.limit(limit), Query.offset(offset)]
       );
-
+      console.log(documents);
       if (documents.length === 0) break;
 
-      allProducts += [...allProducts, ...documents];
+      allProducts = [...allProducts, ...documents];
       offset += limit;
     }
+
     return allProducts;
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching products:", error);
   }
 };
