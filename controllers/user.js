@@ -1,4 +1,4 @@
-import { createUser } from "../appwrite/users";
+import { createUser } from "../appwrite/users.js";
 
 export const addUser = async (req, res) => {
   try {

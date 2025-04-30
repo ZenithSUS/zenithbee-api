@@ -1,18 +1,17 @@
-import { DATABASE_ID, USER_ID, databases, users } from "index.js";
+import { DATABASE_ID, USER_ID, databases, users } from "./index.js";
 import sdk, { Query, Permission, Role } from "node-appwrite";
 
-export const createUser = async (data, id) => {
+export const createUser = async (data) => {
   try {
-    const { firstName, middleName, lastName, password, ...values } = data;
-    const name = `${firstName} ${middleName} ${lastName}`;
-    const res = await users.create(id, values.email, undefined, password, name);
-    await users.updateLabels(res.$id, ["user"]);
+    const { password, userId, ...values } = data;
+    await users.updateLabels(userId, ["user", "user"]);
+
     return await databases.createDocument(
       DATABASE_ID,
       USER_ID,
-      res.$id,
+      userId,
       values,
-      [Permission.read(Role.any()), Permission.write(Role.user(id))]
+      [Permission.read(Role.any()), Permission.write(Role.user(userId))]
     );
   } catch (error) {
     console.error(error);

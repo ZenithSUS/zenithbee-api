@@ -6,6 +6,7 @@ import logger from "./middleware/logger.js";
 import error from "./middleware/error.js";
 import { fileURLToPath } from "url";
 import { notFound } from "./middleware/not-found.js";
+import users from "./routes/users.js";
 
 dotenv.config();
 const PORT = process.env.PORT || 8080;
@@ -15,15 +16,20 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
-
+app.use(express.json());
 app.use(
   cors({
     origin: "*",
   })
 );
+
 app.use(logger);
-app.use(error);
+
+// Routes
+app.use("/api/users", users);
+
 app.use(notFound);
+app.use(error);
 
 app.listen(PORT, () => {
   console.log(`The server is running on port: ${PORT}`);
