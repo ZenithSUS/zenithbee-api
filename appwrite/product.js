@@ -27,6 +27,7 @@ export const getProducts = async () => {
         PRODUCT_ID,
         [Query.limit(limit), Query.offset(offset)]
       );
+
       console.log(documents);
       if (documents.length === 0) break;
 
@@ -37,5 +38,6 @@ export const getProducts = async () => {
     return allProducts;
   } catch (error) {
     console.error("Error fetching products:", error);
+    throw error;
   }
 };

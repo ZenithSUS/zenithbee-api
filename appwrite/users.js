@@ -19,21 +19,28 @@ export const createUser = async (data) => {
 };
 
 export const getUsers = async () => {
-  let allUsers = [];
-  let offset = 0;
-  const limit = 100;
+  try {
+    let allUsers = [];
+    let offset = 0;
+    const limit = 100;
 
-  while (true) {
-    const { documents } = await databases.listDocuments(DATABASE_ID, USER_ID, [
-      Query.limit(limit),
-      Query.offset(offset),
-    ]);
-    if (documents.length === 0) break;
+    while (true) {
+      const { documents } = await databases.listDocuments(
+        DATABASE_ID,
+        USER_ID,
+        [Query.limit(limit), Query.offset(offset)]
+      );
 
-    allUsers += [...allUsers, ...documents];
+      if (documents.length === 0) break;
 
-    offset += limit;
+      allUsers = [...allUsers, ...documents];
+      offset += limit;
+    }
+
+    return allUsers;
+  } catch (error) { 
+    console.error("Error fetching users:", error);
+    throw error;
+    
   }
-
-  return allUsers;
 };
