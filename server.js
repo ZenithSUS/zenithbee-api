@@ -6,6 +6,8 @@ import logger from "./middleware/logger.js";
 import error from "./middleware/error.js";
 import users from "./routes/users.js";
 import products from "./routes/products.js";
+import favorites from "./routes/favorite.js";
+import reserved from "./routes/reserved.js";
 import { fileURLToPath } from "url";
 import { notFound } from "./middleware/not-found.js";
 
@@ -31,6 +33,8 @@ app.use(logger);
 // Routes
 app.use("/api/users", users);
 app.use("/api/products", products);
+app.use("/api/favorites", favorites);
+app.use("/api/reserved", reserved);
 
 app.use(notFound);
 app.use(error);

@@ -28,7 +28,7 @@ export const getProducts = async () => {
         [Query.limit(limit), Query.offset(offset)]
       );
 
-      console.log(documents);
+
       if (documents.length === 0) break;
 
       allProducts = [...allProducts, ...documents];

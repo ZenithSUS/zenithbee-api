@@ -1,12 +1,11 @@
-import { DATABASE_ID, RESERVED_ID, databases } from "./index.js";
+import { DATABASE_ID, FAVORITE_ID, databases } from "./index.js";
 import { ID, Query, Permission, Role } from "node-appwrite";
 
-export const createReserved = async (data) => {
+export const createFavorite = async (data) => {
   try {
-    console.log(data);
     return await databases.createDocument(
       DATABASE_ID,
-      RESERVED_ID,
+      FAVORITE_ID,
       ID.unique(),
       data,
       [Permission.read(Role.any()), Permission.write(Role.user(data.user))]
@@ -16,36 +15,40 @@ export const createReserved = async (data) => {
   }
 };
 
-export const getReserved = async (userId) => {
+export const getFavorites = async (userId) => {
   try {
-    let allReserved = [];
+    let allFavorites = [];
     let offset = 0;
     const limit = 100;
 
     while (true) {
       const { documents } = await databases.listDocuments(
         DATABASE_ID,
-        RESERVED_ID,
+        FAVORITE_ID,
         [Query.limit(limit), Query.offset(offset)]
       );
 
       if (documents.length === 0) break;
 
-      allReserved = [...allReserved, ...documents];
+      allFavorites = [...allFavorites, ...documents];
       offset += limit;
     }
 
-    return allReserved.filter((r) => r.userId === userId);
+    return allFavorites.filter((f) => f.userId === userId);
   } catch (error) {
-    console.error("Error fetching reserved:", error);
+    console.error("Error fetching favorites:", error);
     throw error;
   }
 };
 
-export const deleteReserved = async (reservedId) => {
+export const deleteFavorite = async (favoriteId) => {
   try {
-    console.log(reservedId);
-    return await databases.deleteDocument(DATABASE_ID, RESERVED_ID, reservedId);
+    console.log(favoriteId);
+    return await databases.deleteDocument(
+      DATABASE_ID,
+      FAVORITE_ID,
+      favoriteId
+    )
   } catch (error) {
     console.error(error);
   }
