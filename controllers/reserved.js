@@ -8,30 +8,40 @@ export const fetchReserved = async (req, res) => {
   try {
     const { userId } = req.params;
     const reserved = await getReserved(userId);
-    res.status(200).send(reserved);
+    res.status(200).json(reserved);
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(500).json({
+      status: res.statusCode,
+      message: error.message,
+    });
   }
 };
 
 export const removeReserved = async (req, res) => {
   try {
-    const { reservedId } = req.params;
-    const reserved = await deleteReserved(reservedId);
-    res.status(200).send(reserved);
+    const reserveId = req.params.id;
+    
+    await deleteReserved(reserveId);
+    res.status(200).json({ message: "Reserved deleted" });
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(500).json({
+      status: res.statusCode,
+      message: error.message,
+    });
   }
 };
 
 export const addReserved = async (req, res) => {
   try {
     const reserved = await createReserved(req.body);
-    res.status(200).send(reserved);
+    res.status(200).json(reserved);
   } catch (error) {
     console.error(error);
-    res.status(500).send(error);
+    res.status(500).json({
+      status: res.statusCode,
+      message: error.message,
+    });
   }
 };

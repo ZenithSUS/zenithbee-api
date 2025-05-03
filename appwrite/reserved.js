@@ -26,7 +26,7 @@ export const getReserved = async (userId) => {
       const { documents } = await databases.listDocuments(
         DATABASE_ID,
         RESERVED_ID,
-        [Query.limit(limit), Query.offset(offset)]
+        [Query.limit(limit), Query.offset(offset), Query.orderAsc("$createdAt")]
       );
 
       if (documents.length === 0) break;
@@ -45,7 +45,29 @@ export const getReserved = async (userId) => {
 export const deleteReserved = async (reservedId) => {
   try {
     console.log(reservedId);
-    return await databases.deleteDocument(DATABASE_ID, RESERVED_ID, reservedId);
+    let allReserved = [];
+    let offset = 0;
+    const limit = 100;
+
+    while (true) {
+      const { documents } = await databases.listDocuments(
+        DATABASE_ID,
+        RESERVED_ID,
+        [Query.limit(limit), Query.offset(offset)]
+      );
+
+      if (documents.length === 0) break;
+
+      allReserved = [...allReserved, ...documents];
+      offset += limit;
+    }
+
+    allReserved.forEach(async (r) => {
+      if (r.reservedId === reservedId) {
+        await databases.deleteDocument(DATABASE_ID, RESERVED_ID, r.$id);
+      }
+    });
+
   } catch (error) {
     console.error(error);
   }
