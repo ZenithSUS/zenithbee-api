@@ -15,4 +15,5 @@ export const DATABASE_ID = process.env.APPWRITE_DATABASE_ID;
 export const USER_ID = process.env.APPWRITE_USER_ID;
 export const PRODUCT_ID = process.env.APPWRITE_PRODUCT_ID;
 export const FAVORITE_ID = process.env.APPWRITE_FAVORITE_ID;
+export const ORDER_ID = process.env.APPWRITE_ORDER_ID;
 export const RESERVED_ID = process.env.APPWRITE_RESERVED_ID;
