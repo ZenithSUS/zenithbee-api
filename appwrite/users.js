@@ -38,9 +38,45 @@ export const getUsers = async () => {
     }
 
     return allUsers;
-  } catch (error) { 
+  } catch (error) {
     console.error("Error fetching users:", error);
     throw error;
-    
+  }
+};
+
+export const getUser = async (userId) => {
+  try {
+    const { documents } = await databases.listDocuments(
+      DATABASE_ID,
+      USER_ID,
+      userId
+    );
+
+    const { email, profileImage, address, $createdAt } = documents[0];
+
+    return {
+      fullname: `${documents[0].firstName} ${documents[0].middleName} ${documents[0].lastName}`,
+      email,
+      address,
+      profileImage,
+      $createdAt,
+    };
+  } catch (error) {
+    console.error("Error fetching user:", error);
+  }
+};
+
+export const updateUserAddress = async (data, documentId) => {
+  try {
+    const result = await databases.updateDocument(
+      DATABASE_ID,
+      USER_ID,
+      documentId,
+      data
+    );
+
+    return result;
+  } catch (error) {
+    console.error("Error Updating Address:", error);
   }
 };
