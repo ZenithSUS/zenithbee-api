@@ -66,13 +66,32 @@ export const getUser = async (userId) => {
   }
 };
 
+export const getUserAddresses = async (userId) => {
+  try {
+    const { documents } = await databases.listDocuments(
+      DATABASE_ID,
+      USER_ID,
+      userId
+    );
+
+    const { address, email } = documents[0];
+
+    return {
+      address,
+      email,
+    };
+  } catch (error) {
+    console.error("Error getting user addresses:", error);
+  }
+};
+
 export const updateUserAddress = async (data, documentId) => {
   try {
     const result = await databases.updateDocument(
       DATABASE_ID,
       USER_ID,
       documentId,
-      data
+      { address: data }
     );
 
     return result;

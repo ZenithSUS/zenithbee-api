@@ -26,7 +26,11 @@ export const getReserved = async (userId) => {
       const { documents } = await databases.listDocuments(
         DATABASE_ID,
         RESERVED_ID,
-        [Query.limit(limit), Query.offset(offset), Query.orderDesc("$createdAt")]
+        [
+          Query.limit(limit),
+          Query.offset(offset),
+          Query.orderDesc("$createdAt"),
+        ]
       );
 
       if (documents.length === 0) break;
@@ -36,36 +40,38 @@ export const getReserved = async (userId) => {
     }
 
     const allReservedByUser = allReserved.filter((r) => r.userId === userId);
-    
+
     const groupReserved = new Map();
 
     allReservedByUser.forEach((r) => {
-      if(!groupReserved.has(r.reservedId)) {
-        groupReserved.set(r.reservedId, []);
-      } 
-        groupReserved.get(r.reservedId).push(r);
-      
+      if (!groupReserved.has(r.reservedId)) {
+        groupReserved.set(r.reservedId, {
+          reservedId: r.reservedId,
+          address: r.address,
+          items: [],
+        });
+      }
+      groupReserved.get(r.reservedId).items.push(r);
     });
 
-    return Array.from(groupReserved.entries()).map(([id, items]) => {
-      const totalPrice = items.reduce(
-        (sum, item) =>
-          sum + (parseFloat(item.price) || 0),
-        0,
-      );
-      const totalQuantity = items.reduce(
-        (sum, item) =>
-          sum + (parseInt(item.quantity) || 0),
-        0,
-      );
+    return Array.from(
+      groupReserved.values().map((group) => {
+        const totalPrice = group.items.reduce(
+          (sum, item) => sum + (parseFloat(item.price) || 0),
+          0
+        );
+        const totalQuantity = group.items.reduce(
+          (sum, item) => sum + (parseInt(item.quantity) || 0),
+          0
+        );
 
-      return {
-        reservedId: id,
-        items,
-        totalPrice,
-        totalQuantity,
-      };
-    });
+        return {
+          ...group,
+          totalPrice,
+          totalQuantity,
+        };
+      })
+    );
   } catch (error) {
     console.error("Error fetching reserved:", error);
     throw error;
@@ -74,7 +80,6 @@ export const getReserved = async (userId) => {
 
 export const deleteReserved = async (reservedId) => {
   try {
-    
     let allReserved = [];
     let offset = 0;
     const limit = 100;
@@ -97,7 +102,6 @@ export const deleteReserved = async (reservedId) => {
         await databases.deleteDocument(DATABASE_ID, RESERVED_ID, r.$id);
       }
     });
-
   } catch (error) {
     console.error(error);
   }

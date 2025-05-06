@@ -2,6 +2,7 @@ import {
   createUser,
   getUsers,
   getUser,
+  getUserAddresses,
   updateUserAddress,
 } from "../appwrite/users.js";
 
@@ -48,6 +49,26 @@ export const fetchUser = async (req, res) => {
   try {
     const user = await getUser();
     return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({
+      status: res.statusCode,
+      message: error.message,
+    });
+  }
+};
+
+export const fetchUserAddresses = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unprocessable Entity",
+      });
+    }
+
+    const addresses = await getUserAddresses(userId);
+    return res.status(200).json(addresses);
   } catch (error) {
     return res.status(500).json({
       status: res.statusCode,

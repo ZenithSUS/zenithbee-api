@@ -44,27 +44,31 @@ export const getOrdersByUser = async (userId) => {
 
     allOrdersByUser.forEach((o) => {
       if (!groupOrders.has(o.orderId)) {
-        groupOrders.set(o.orderId, []);
+        groupOrders.set(o.orderId, {
+          orderId: o.orderId,
+          address: o.address,
+          status: o.status,
+          orders: [],
+        });
       }
-      groupOrders.get(o.orderId).push(o);
+      groupOrders.get(o.orderId).orders.push(o);
     });
 
-    return Array.from(groupOrders.entries()).map(([id, orders]) => {
-      const totalPrice = orders.reduce(
-        (total, order) => total + parseFloat(order.price) || 0,
+    return Array.from(groupOrders.values()).map((group) => {
+      const totalPrice = group.orders.reduce(
+        (total, order) => total + (parseFloat(order.price) || 0),
         0
       );
 
-      const totalQuantity = orders.reduce(
-        (total, order) => total + parseFloat(order.quantity) || 0,
+      const totalQuantity = group.orders.reduce(
+        (total, order) => total + (parseFloat(order.quantity) || 0),
         0
       );
+
       return {
-        orderId: id,
-        orders,
+        ...group,
         totalPrice,
         totalQuantity,
-        status: orders[0].status,
       };
     });
   } catch (error) {
