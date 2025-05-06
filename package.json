@@ -17,6 +17,7 @@
   "author": "ZenithSUS",
   "license": "ISC",
   "dependencies": {
+    "@mistralai/mistralai": "^1.6.0",
     "@types/uuid": "^10.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
