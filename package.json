@@ -24,7 +24,8 @@
     "express": "^5.1.0",
     "node-appwrite": "^11.1.1",
     "react-modal": "^3.16.3",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@types/express": "^5.0.1"
