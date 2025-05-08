@@ -28,7 +28,6 @@ export const getProducts = async () => {
         [Query.limit(limit), Query.offset(offset)]
       );
 
-
       if (documents.length === 0) break;
 
       allProducts = [...allProducts, ...documents];
@@ -36,6 +35,21 @@ export const getProducts = async () => {
     }
 
     return allProducts;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+};
+
+export const getProductsByLength = async (limit) => {
+  try {
+    const { documents } = await databases.listDocuments(
+      DATABASE_ID,
+      PRODUCT_ID,
+      [Query.limit(limit)]
+    );
+
+    return documents;
   } catch (error) {
     console.error("Error fetching products:", error);
     throw error;

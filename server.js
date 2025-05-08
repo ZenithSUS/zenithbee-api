@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import logger from "./middleware/logger.js";
 import error from "./middleware/error.js";
+import mistral from "./routes/mistral.js";
 import users from "./routes/users.js";
 import products from "./routes/products.js";
 import favorites from "./routes/favorite.js";
@@ -30,8 +31,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use(logger);
 
-
 // Routes
+app.use("/api/mistral", mistral);
 app.use("/api/users", users);
 app.use("/api/products", products);
 app.use("/api/orders", orders);
