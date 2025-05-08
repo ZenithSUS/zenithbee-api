@@ -1,4 +1,8 @@
-import { getProducts, getProductsByLength } from "../appwrite/product.js";
+import {
+  getProducts,
+  getProductsByLength,
+  getPopularProducts,
+} from "../appwrite/product.js";
 
 export const fetchProducts = async () => {
   const products = await getProducts();
@@ -24,6 +28,11 @@ export const fetchProductByLength = async ({ length }) => {
     price: item.price,
     foodType: item.foodType,
   }));
+};
+
+export const fetchPopularProducts = async () => {
+  const products = await getPopularProducts();
+  return products;
 };
 
 export const tools = [
@@ -54,6 +63,18 @@ export const tools = [
           },
         },
         required: ["length"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "fetchPopularProducts",
+      description: "Fetch the popular products from ZenithBee",
+      parameters: {
+        type: "object",
+        properties: {},
+        required: [],
       },
     },
   },

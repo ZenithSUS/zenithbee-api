@@ -1,17 +1,30 @@
-import { DATABASE_ID, ORDER_ID, databases } from "./index.js";
+import { DATABASE_ID, ORDER_ID, PRODUCT_ID, databases } from "./index.js";
 import { ID, Query, Permission, Role } from "node-appwrite";
 
 export const createOrder = async (data) => {
   try {
-    return await databases.createDocument(
+    await databases.createDocument(DATABASE_ID, ORDER_ID, ID.unique(), data, [
+      Permission.read(Role.any()),
+      Permission.write(Role.user(data.user)),
+    ]);
+
+    const product = await databases.getDocument(
       DATABASE_ID,
-      ORDER_ID,
-      ID.unique(),
-      data,
-      [Permission.read(Role.any()), Permission.write(Role.user(data.user))]
+      PRODUCT_ID,
+      data.product
+    );
+
+    return await databases.updateDocument(
+      DATABASE_ID,
+      PRODUCT_ID,
+      data.product,
+      {
+        bought: (product.bought || 0) + parseInt(data.quantity),
+      }
     );
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 

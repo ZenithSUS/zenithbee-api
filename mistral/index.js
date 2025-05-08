@@ -1,13 +1,19 @@
 import { Mistral } from "@mistralai/mistralai";
-import { fetchProductByLength, tools } from "../tools/tools.js";
+import {
+  fetchPopularProducts,
+  fetchProductByLength,
+  tools,
+} from "../tools/tools.js";
 import { fetchProducts } from "../tools/tools.js";
 import dotenv from "dotenv";
 dotenv.config();
+
 const apiKey = process.env.MISTRAL_API_KEY;
 
 const availableFunctions = {
   fetchProducts,
   fetchProductByLength,
+  fetchPopularProducts,
 };
 
 const SYSTEM_PROMPT = `You are ZenithBee, a helpful, cheerful AI food ordering assistant for the ZenithBee platform. Your job is to guide users through browsing and ordering food in a smooth, friendly, and fun way. Speak casually but clearly. Recommend popular dishes, discounts, or personalized options (like user favorites or food types). Be concise, suggest delicious options, and avoid overexplaining.
@@ -71,7 +77,7 @@ Return:
 }
 
 ⚠️ Final Reminder:
-Return only a valid raw object that conforms to the schema. Never include code blocks, extra formatting, or plain text.`;
+Return only a valid raw object that conforms to the schema. Never include code blocks, extra formatting, markdowns or plain text.`;
 
 const client = new Mistral({ apiKey: apiKey });
 

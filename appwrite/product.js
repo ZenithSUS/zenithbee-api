@@ -15,6 +15,21 @@ export const createProduct = async (data) => {
   }
 };
 
+export const getPopularProducts = async () => {
+  try {
+    const { documents } = await databases.listDocuments(
+      DATABASE_ID,
+      PRODUCT_ID,
+      [Query.limit(3), Query.orderDesc("bought")]
+    );
+
+    return documents;
+  } catch (error) {
+    console.error("Error counting ordered products:", error);
+    throw error;
+  }
+};
+
 export const getProducts = async () => {
   try {
     let allProducts = [];

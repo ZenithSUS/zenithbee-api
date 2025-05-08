@@ -1,4 +1,8 @@
-import { createProduct, getProducts } from "../appwrite/product.js";
+import {
+  createProduct,
+  getProducts,
+  getPopularProducts,
+} from "../appwrite/product.js";
 
 export const addProduct = async (req, res) => {
   try {
@@ -41,5 +45,18 @@ export const fetchProducts = async (req, res) => {
       message: error.message,
     });
     console.error(error);
+  }
+};
+
+export const fetchPopularProducts = async (req, res) => {
+  try {
+    const data = await getPopularProducts();
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: res.statusCode,
+      message: error.message,
+    });
   }
 };

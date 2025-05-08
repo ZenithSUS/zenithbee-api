@@ -1,8 +1,10 @@
 import { AI_Response } from "../mistral/index.js";
 
-export const getMistraResponse = async (req, res) => {
+export const getMistralResponse = async (req, res) => {
   try {
-    const response = await AI_Response("Give me 5 ZenithBee Products");
+    const response = await AI_Response(
+      "Give me the most lowest price of ZenithBee Product"
+    );
 
     return res.status(200).json(JSON.parse(response));
   } catch (error) {
@@ -14,7 +16,7 @@ export const getMistraResponse = async (req, res) => {
   }
 };
 
-export const MistralAI = async (req, res) => {
+export const postMistralResponse = async (req, res) => {
   try {
     if (!req.body) {
       return res.status(401).json({
