@@ -24,8 +24,9 @@ export const postMistralResponse = async (req, res) => {
       });
     }
 
-    const { message } = req.body;
-    const response = await AI_Response(message);
+    const { input } = req.body;
+    const response = await AI_Response(input);
+    console.log(response);
     return res.status(200).json(JSON.parse(response));
   } catch (error) {
     return res.status(500).json({

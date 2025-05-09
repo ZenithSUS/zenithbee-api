@@ -14,6 +14,7 @@ export const fetchProducts = async () => {
     image: item.image,
     price: item.price,
     foodType: item.foodType,
+    rating: item.rating,
   }));
 };
 
@@ -27,6 +28,7 @@ export const fetchProductByLength = async ({ length }) => {
     image: item.image,
     price: item.price,
     foodType: item.foodType,
+    rating: item.rating,
   }));
 };
 
