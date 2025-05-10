@@ -1,11 +1,11 @@
 import { Mistral } from "@mistralai/mistralai";
 import { SYSTEM_PROMPT } from "../utils/system-prompt.js";
+import { tools } from "../tools/tools.js";
 import {
-  fetchPopularProducts,
+  fetchProducts,
   fetchProductByLength,
-  tools,
-} from "../tools/tools.js";
-import { fetchProducts } from "../tools/tools.js";
+  fetchPopularProducts,
+} from "../tools/agents.js";
 import dotenv from "dotenv";
 dotenv.config();
 

@@ -54,24 +54,22 @@ export const getReserved = async (userId) => {
       groupReserved.get(r.reservedId).items.push(r);
     });
 
-    return Array.from(
-      groupReserved.values().map((group) => {
-        const totalPrice = group.items.reduce(
-          (sum, item) => sum + (parseFloat(item.price) || 0),
-          0
-        );
-        const totalQuantity = group.items.reduce(
-          (sum, item) => sum + (parseInt(item.quantity) || 0),
-          0
-        );
+    return Array.from(groupReserved.values()).map((group) => {
+      const totalPrice = group.items.reduce(
+        (sum, item) => sum + (parseFloat(item.price) || 0),
+        0
+      );
+      const totalQuantity = group.items.reduce(
+        (sum, item) => sum + (parseInt(item.quantity) || 0),
+        0
+      );
 
-        return {
-          ...group,
-          totalPrice,
-          totalQuantity,
-        };
-      })
-    );
+      return {
+        ...group,
+        totalPrice,
+        totalQuantity,
+      };
+    });
   } catch (error) {
     console.error("Error fetching reserved:", error);
     throw error;
