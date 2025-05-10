@@ -5,6 +5,7 @@ import {
   fetchProducts,
   fetchProductByLength,
   fetchPopularProducts,
+  fetchReservedByLength
 } from "../tools/agents.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -15,6 +16,7 @@ const availableFunctions = {
   fetchProducts,
   fetchProductByLength,
   fetchPopularProducts,
+  fetchReservedByLength
 };
 
 const client = new Mistral({ apiKey: apiKey });
@@ -29,10 +31,15 @@ export const AI_Response = async (message) => {
     const response = await client.chat.complete({
       model: "mistral-large-latest",
       messages: messages,
+      temperature: 0.5,
       tools: tools,
+    
     });
 
+    
+
     messages.push(response.choices[0].message);
+    console.log(response.choices[0].finishReason);
 
     if (response.choices[0].finishReason === "stop") {
       return response.choices[0].message.content;
@@ -50,6 +57,5 @@ export const AI_Response = async (message) => {
         content: JSON.stringify(fnRes),
       });
     }
-    console.log(response.choices[0].message);
   }
 };

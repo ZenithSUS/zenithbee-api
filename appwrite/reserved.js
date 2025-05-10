@@ -104,3 +104,20 @@ export const deleteReserved = async (reservedId) => {
     console.error(error);
   }
 };
+
+export const getReservedByUserLimit = async (userId, limit) => {
+  try {
+    const { documents } = await databases.listDocuments(
+      DATABASE_ID,
+      RESERVED_ID,
+      [
+        Query.limit(limit),
+        Query.orderDesc("$createdAt"),
+        Query.equal("user", userId),
+      ]
+    );
+    return documents;
+  } catch (error) {
+    console.error("Error getting single reserved:", error);
+  }
+};

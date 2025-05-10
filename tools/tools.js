@@ -41,4 +41,26 @@ export const tools = [
       },
     },
   },
+  {
+    type: "function",
+    function: {
+      name: "fetchReservedByLength",
+      description:
+        "Fetch a specific number of reserved products from ZenithBee based on the user's requested amount.",
+      parameters: {
+        type: "object",
+        properties: {
+          userId: {
+            type: "string",
+            description: "The user's ID.",
+          },
+          length: {
+            type: "number",
+            description: "The number of reserved products to retrieve.",
+          },
+        },
+        required: ["userId", "length"],
+      },
+    }
+  }
 ];

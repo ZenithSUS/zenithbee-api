@@ -3,6 +3,7 @@ import {
   getProductsByLength,
   getPopularProducts,
 } from "../appwrite/product.js";
+import { getReservedByUserLimit } from "../appwrite/reserved.js";
 
 export const fetchProducts = async () => {
   const products = await getProducts();
@@ -35,4 +36,10 @@ export const fetchProductByLength = async ({ length }) => {
 export const fetchPopularProducts = async () => {
   const products = await getPopularProducts();
   return products;
+};
+
+export const fetchReservedByLength = async ({ userId, length }) => {
+  console.log(userId, length);
+  const reserved = await getReservedByUserLimit(userId, length);
+  return reserved;
 };
