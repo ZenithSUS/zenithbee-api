@@ -66,7 +66,8 @@ export const getProductsByAttribute = async (value) => {
     const filteredProducts = documents.filter(
       (product) =>
         product.name.toLowerCase().includes(value.toLowerCase()) ||
-        product.foodType.toLowerCase().includes(value.toLowerCase())
+        product.foodType.toLowerCase().includes(value.toLowerCase()) ||
+        product.description.toLowerCase().includes(value.toLowerCase())
     );
 
     return filteredProducts

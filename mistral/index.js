@@ -6,6 +6,7 @@ import {
   fetchProductByLength,
   fetchPopularProducts,
   fetchReservedByLength,
+  fetchProductByAttribute
 } from "../tools/agents.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -18,6 +19,7 @@ const availableFunctions = {
   fetchProductByLength,
   fetchPopularProducts,
   fetchReservedByLength,
+  fetchProductByAttribute
 };
 
 // Create a singleton client to reuse connections
