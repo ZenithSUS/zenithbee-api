@@ -6,7 +6,6 @@ import {
   fetchProductByLength,
   fetchPopularProducts,
   fetchReservedByLength,
-  fetchProductByAttribute,
 } from "../tools/agents.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -19,7 +18,6 @@ const availableFunctions = {
   fetchProductByLength,
   fetchPopularProducts,
   fetchReservedByLength,
-  fetchProductByAttribute
 };
 
 // Create a singleton client to reuse connections
@@ -39,30 +37,22 @@ export const AI_Response = async (message) => {
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     try {
-      
-      const response = await 
-        client.chat.complete({
-          model: "mistral-large-latest",
-          messages: messages,
-          tools: tools,
-          tool_choice: "auto",
-          temperature: 0.7, // Adjust based on your needs
-        });
-      
-        
+      // Make API request with timeout
+      const response = await client.chat.complete({
+        model: "mistral-large-latest",
+        messages: messages,
+        tools: tools,
+        temperature: 0.7, // Adjust based on your needs
+      });
+
       const responseMessage = response.choices[0].message;
       messages.push(responseMessage);
-      console.log(responseMessage);
 
       if (response.choices[0].finishReason === "stop") {
         return responseMessage.content;
       } else if (response.choices[0].finishReason === "tool_calls") {
         // Process all tool calls in parallel for speed improvement
         const toolCalls = responseMessage.toolCalls;
-
-        if (!toolCalls || toolCalls.length === 0) {
-          return responseMessage.content;
-        }
 
         // Map each tool call to a promise
         const toolPromises = toolCalls.map(async (toolCall) => {
@@ -72,7 +62,7 @@ export const AI_Response = async (message) => {
 
           try {
             fnArgs = JSON.parse(fnObj.arguments);
-            console.log(`Executing ${fnName} with args:`, fnArgs);
+            console.log(`Function ${fnName} arguments:`, fnArgs);
           } catch (e) {
             console.error(`Invalid JSON in tool arguments: ${fnObj.arguments}`);
             return {
@@ -97,7 +87,7 @@ export const AI_Response = async (message) => {
 
           try {
             const fnRes = await availableFunctions[fnName](fnArgs);
-            console.log(`Function ${fnName} returned:`, fnRes);
+            console.log(`Function ${fnName} result:`, fnRes);
             return {
               role: "tool",
               toolCallId: toolCall.id,
