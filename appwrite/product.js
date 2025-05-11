@@ -56,6 +56,27 @@ export const getProducts = async () => {
   }
 };
 
+export const getProductsByAttribute = async (value) => {
+  try {
+    const { documents } = await databases.listDocuments(
+      DATABASE_ID,
+      PRODUCT_ID
+    );
+
+    const filteredProducts = documents.filter(
+      (product) =>
+        product.name.toLowerCase().includes(value.toLowerCase()) ||
+        product.foodType.toLowerCase().includes(value.toLowerCase())
+    );
+
+    return filteredProducts
+
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+};
+
 export const getProductsByLength = async (limit) => {
   try {
     const { documents } = await databases.listDocuments(
