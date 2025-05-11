@@ -3,7 +3,7 @@ import { AI_Response } from "../mistral/index.js";
 export const getMistralResponse = async (req, res) => {
   try {
     const response = await AI_Response(
-      "Give me the most lowest price of ZenithBee Product"
+      "Give all ZenithBee Products"
     );
 
     return res.status(200).json(JSON.parse(response));

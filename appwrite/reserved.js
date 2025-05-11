@@ -111,12 +111,43 @@ export const getReservedByUserLimit = async (userId, limit) => {
       DATABASE_ID,
       RESERVED_ID,
       [
-        Query.limit(limit),
+      
         Query.orderDesc("$createdAt"),
         Query.equal("user", userId),
       ]
     );
-    return documents;
+
+    const groupReserved = new Map();
+
+    documents.forEach((r) => {
+      if (!groupReserved.has(r.reservedId)) {
+        groupReserved.set(r.reservedId, {
+          reservedId: r.reservedId,
+          address: r.address,
+          items: [],
+        });
+      }
+      groupReserved.get(r.reservedId).items.push(r);
+    });
+
+    return Array.from(groupReserved.values()).map((group) => {
+      const totalPrice = group.items.reduce(
+        (sum, item) => sum + (parseFloat(item.price) || 0),
+        0
+      );
+      const totalQuantity = group.items.reduce(
+        (sum, item) => sum + (parseInt(item.quantity) || 0),
+        0
+      );
+
+      return {
+        ...group,
+        totalPrice,
+        totalQuantity,
+      };
+    }).slice(0, limit);
+
+    
   } catch (error) {
     console.error("Error getting single reserved:", error);
   }

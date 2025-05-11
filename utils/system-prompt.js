@@ -32,14 +32,17 @@ const UserSchema = z.object({
 });
 
 const ReservedSchema = z.object({
-  $id: z.string(),
-  user: z.array(UserSchema),
-  product: z.array(ProductSchema),
   reservedId: z.string(),
-  quantity: z.number(),
-  price: z.number(),
-  size: z.string(),
   address: z.string(),
+  totalPrice: z.number(),
+  totalQuantity: z.number(),
+  items: z.array(z.object({
+    quantity: z.number(),
+    price: z.number(),
+    size: z.string(),
+    z.array(ProductSchema),
+    z.array(UserSchema),
+  })),
 });
 
 const ZenithBeeResponseSchema = z.object({
@@ -135,7 +138,7 @@ User: Show me my reserved products (userId_abc123)
 Return:
 {
   "message": "Here are your reserved products: ",
-  "reserved": [ ... ],
+  "reserved": [ { ... }  ] (this is an array of reserved items),
   "product": []
 }
 

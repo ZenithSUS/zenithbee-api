@@ -25,7 +25,6 @@ const availableFunctions = {
 // Create a singleton client to reuse connections
 const client = new Mistral({
   apiKey: apiKey,
-  maxRetries: 2, // Limit retries for faster failure
 });
 
 export const AI_Response = async (message) => {
@@ -40,28 +39,30 @@ export const AI_Response = async (message) => {
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     try {
-      // Make API request with timeout
-      const response = await Promise.race([
+      
+      const response = await 
         client.chat.complete({
           model: "mistral-large-latest",
           messages: messages,
           tools: tools,
+          tool_choice: "auto",
           temperature: 0.7, // Adjust based on your needs
-        }),
-        // Add a timeout to prevent hanging requests
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Request timeout")), 15000)
-        ),
-      ]);
-
+        });
+      
+        
       const responseMessage = response.choices[0].message;
       messages.push(responseMessage);
+      console.log(responseMessage);
 
       if (response.choices[0].finishReason === "stop") {
         return responseMessage.content;
       } else if (response.choices[0].finishReason === "tool_calls") {
         // Process all tool calls in parallel for speed improvement
         const toolCalls = responseMessage.toolCalls;
+
+        if (!toolCalls || toolCalls.length === 0) {
+          return responseMessage.content;
+        }
 
         // Map each tool call to a promise
         const toolPromises = toolCalls.map(async (toolCall) => {
