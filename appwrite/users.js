@@ -74,6 +74,10 @@ export const getUserAddresses = async (userId) => {
       userId
     );
 
+    if (documents.length === 0) {
+      throw new Error("No addresses found for the given userId.");
+    }
+
     const { address, email } = documents[0];
 
     return {
@@ -82,6 +86,7 @@ export const getUserAddresses = async (userId) => {
     };
   } catch (error) {
     console.error("Error getting user addresses:", error);
+    throw error;
   }
 };
 
