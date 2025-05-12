@@ -30,56 +30,10 @@ export const getPopularProducts = async () => {
   }
 };
 
+
 export const getProducts = async () => {
   try {
-    let allProducts = [];
-    let offset = 0;
-    const limit = 100;
-
-    while (true) {
-      const { documents } = await databases.listDocuments(
-        DATABASE_ID,
-        PRODUCT_ID,
-        [Query.limit(limit), Query.offset(offset)]
-      );
-
-      if (documents.length === 0) break;
-
-      allProducts = [...allProducts, ...documents];
-      offset += limit;
-    }
-
-    return allProducts;
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-};
-
-export const getProductsByAttribute = async (value) => {
-  try {
-    const { documents } = await databases.listDocuments(
-      DATABASE_ID,
-      PRODUCT_ID
-    );
-
-    const filteredProducts = documents.filter(
-      (product) =>
-        product.name.toLowerCase().includes(value.toLowerCase()) ||
-        product.foodType.toLowerCase().includes(value.toLowerCase()) ||
-        product.description.toLowerCase().includes(value.toLowerCase())
-    );
-
-    return filteredProducts
-
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-};
-
-export const getProductsByLength = async (limit) => {
-  try {
+    const limit = 1000;
     const { documents } = await databases.listDocuments(
       DATABASE_ID,
       PRODUCT_ID,
@@ -89,6 +43,44 @@ export const getProductsByLength = async (limit) => {
     return documents;
   } catch (error) {
     console.error("Error fetching products:", error);
+    throw error;
+  }
+};
+
+export const getProductsByAttribute = async (value) => {
+  try {
+    const searchValue = value.trim().toLowerCase();
+    const { documents } = await databases.listDocuments(
+      DATABASE_ID,
+      PRODUCT_ID,
+      [
+        Query.or([
+          Query.search("name", searchValue),
+          Query.search("description", searchValue),
+          Query.search("foodType", searchValue),
+        ]),
+        Query.limit(10),
+      ]
+    );
+
+    return documents;
+  } catch (error) {
+    console.error("Error fetching products by attribute:", error);
+    throw error;
+  }
+};
+
+export const getProductsByLength = async (length) => {
+  try {
+    const limit = parseInt(length);
+    const { documents } = await databases.listDocuments(
+      DATABASE_ID,
+      PRODUCT_ID,
+      [Query.limit(limit)]
+    );
+    return documents;
+  } catch (error) {
+    console.error("Error fetching products by length:", error);
     throw error;
   }
 };

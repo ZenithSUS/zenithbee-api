@@ -54,7 +54,6 @@ export const fetchPopularProducts = async () => {
 };
 
 export const fetchReservedByLength = async ({ userId, length }) => {
-  console.log(userId, length);
   const reserved = await getReservedByUserLimit(userId, length);
   return reserved;
 };

@@ -6,45 +6,45 @@ import {
   fetchProductByLength,
   fetchPopularProducts,
   fetchReservedByLength,
-  fetchProductByAttribute
+  fetchProductByAttribute,
 } from "../tools/agents.js";
 import dotenv from "dotenv";
 dotenv.config();
 
 const apiKey = process.env.MISTRAL_API_KEY;
 
-// Pre-map function references for faster lookups
 const availableFunctions = {
   fetchProducts,
   fetchProductByLength,
   fetchPopularProducts,
   fetchReservedByLength,
-  fetchProductByAttribute
+  fetchProductByAttribute,
 };
 
-// Create a singleton client to reuse connections
 const client = new Mistral({
   apiKey: apiKey,
 });
 
 export const AI_Response = async (message) => {
-  // Initialize messages array with system prompt and user message
   const messages = [
     { role: "system", content: SYSTEM_PROMPT },
     { role: "user", content: message },
   ];
 
-  // Set a maximum number of iterations to prevent infinite loops
   const MAX_ITERATIONS = 5;
+  const MAX_TOOL_CALLS = 3;
+  let toolCallCount = 0;
+  const toolCache = new Map();
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     try {
-      // Make API request with timeout
       const response = await client.chat.complete({
         model: "mistral-large-latest",
-        messages: messages,
-        tools: tools,
-        temperature: 0.7, // Adjust based on your needs
+        messages,
+        tools,
+        temperature: 0.7,
+        maxTokens: 10000,
+        toolChoice: "auto",
       });
 
       const responseMessage = response.choices[0].message;
@@ -52,11 +52,17 @@ export const AI_Response = async (message) => {
 
       if (response.choices[0].finishReason === "stop") {
         return responseMessage.content;
-      } else if (response.choices[0].finishReason === "tool_calls") {
-        // Process all tool calls in parallel for speed improvement
-        const toolCalls = responseMessage.toolCalls;
+      }
 
-        // Map each tool call to a promise
+      if (response.choices[0].finishReason === "tool_calls") {
+        const toolCalls = responseMessage.toolCalls;
+        toolCallCount += toolCalls.length;
+
+        if (toolCallCount > MAX_TOOL_CALLS) {
+          console.warn("[AI_Response] Exceeded tool call limit.");
+          return "Too many tool calls. Ending session to avoid infinite loop.";
+        }
+
         const toolPromises = toolCalls.map(async (toolCall) => {
           const fnObj = toolCall.function;
           const fnName = fnObj.name;
@@ -64,7 +70,7 @@ export const AI_Response = async (message) => {
 
           try {
             fnArgs = JSON.parse(fnObj.arguments);
-            console.log(`Function ${fnName} arguments:`, fnArgs);
+            console.log(`[ToolCall] ${fnName} args:`, fnArgs);
           } catch (e) {
             console.error(`Invalid JSON in tool arguments: ${fnObj.arguments}`);
             return {
@@ -87,9 +93,22 @@ export const AI_Response = async (message) => {
             };
           }
 
+          const cacheKey = `${fnName}-${JSON.stringify(fnArgs)}`;
+          if (toolCache.has(cacheKey)) {
+            console.log(`[ToolCache] Returning cached result for ${fnName}`);
+            return {
+              role: "tool",
+              toolCallId: toolCall.id,
+              name: fnName,
+              content: JSON.stringify(toolCache.get(cacheKey)),
+            };
+          }
+
           try {
+            console.time(`[ToolExec] ${fnName}`);
             const fnRes = await availableFunctions[fnName](fnArgs);
-            console.log(`Function ${fnName} result:`, fnRes);
+            console.timeEnd(`[ToolExec] ${fnName}`);
+            toolCache.set(cacheKey, fnRes);
             return {
               role: "tool",
               toolCallId: toolCall.id,
@@ -109,22 +128,23 @@ export const AI_Response = async (message) => {
           }
         });
 
-        // Wait for all tool calls to complete and add results to messages
         const toolResults = await Promise.all(toolPromises);
         messages.push(...toolResults);
       }
     } catch (error) {
       console.error("Error in AI_Response:", error);
 
-      // Return a meaningful error message after retries fail
       if (i === MAX_ITERATIONS - 1) {
         return `Sorry, I encountered an error: ${error.message}`;
       }
 
-      // Add a small delay before retry
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
 
-  return "I wasn't able to complete the response after several attempts.";
+  return {
+    message: "I wasn't able to complete the response after several attempts.",
+    product: [],
+    reserved: [],
+  };
 };

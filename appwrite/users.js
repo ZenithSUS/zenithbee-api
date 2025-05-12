@@ -1,5 +1,5 @@
 import { DATABASE_ID, USER_ID, databases, users } from "./index.js";
-import sdk, { Query, Permission, Role } from "node-appwrite";
+import { Query, Permission, Role } from "node-appwrite";
 
 export const createUser = async (data) => {
   try {
