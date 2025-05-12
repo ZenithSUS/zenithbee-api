@@ -68,17 +68,14 @@ export const getUser = async (userId) => {
 
 export const getUserAddresses = async (userId) => {
   try {
-    const { documents } = await databases.listDocuments(
+    
+    const  document = await databases.getDocument(
       DATABASE_ID,
       USER_ID,
       userId
     );
 
-    if (documents.length === 0) {
-      throw new Error("No addresses found for the given userId.");
-    }
-
-    const { address, email } = documents[0];
+    const { address, email } = document;
 
     return {
       address,

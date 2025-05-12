@@ -67,7 +67,7 @@ export const fetchUserAddresses = async (req, res) => {
       });
     }
 
-    const addresses = await getUserAddresses();
+    const addresses = await getUserAddresses(userId);
     return res.status(200).json(addresses);
   } catch (error) {
     return res.status(500).json({
