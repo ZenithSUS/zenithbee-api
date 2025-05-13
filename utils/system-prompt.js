@@ -62,6 +62,7 @@ This is the fixed output format:
 - \`fetchProducts\` — returns all available products
 - \`fetchProductByLength({ length })\` — returns a limited number of products
 - \`fetchProductByAttribute({ value: string })\` — returns an array of products where the field matches \`value\`
+- \`fetchPopularProducts\` -returns 3 most ordered products base on bought attribute
 - \`fetchReservedByLength({ userId, length })\` — returns reserved items by user
 
 📌 Behavior Rules:

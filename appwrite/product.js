@@ -30,7 +30,6 @@ export const getPopularProducts = async () => {
   }
 };
 
-
 export const getProducts = async () => {
   try {
     const limit = 1000;
@@ -69,16 +68,17 @@ export const getProductsByAttribute = async (value) => {
     throw error;
   }
 };
-
 export const getProductsByLength = async (length) => {
   try {
     const limit = parseInt(length);
     const { documents } = await databases.listDocuments(
       DATABASE_ID,
-      PRODUCT_ID,
-      [Query.limit(limit)]
+      PRODUCT_ID
     );
-    return documents;
+
+    const shuffled = documents.sort(() => 0.5 - Math.random());
+
+    return shuffled.slice(0, limit);
   } catch (error) {
     console.error("Error fetching products by length:", error);
     throw error;

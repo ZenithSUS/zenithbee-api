@@ -24,17 +24,15 @@ const availableFunctions = {
 const client = new Mistral({
   apiKey: apiKey,
 });
+const messages = [{ role: "system", content: SYSTEM_PROMPT }];
 
 export const AI_Response = async (message) => {
-  const messages = [
-    { role: "system", content: SYSTEM_PROMPT },
-    { role: "user", content: message },
-  ];
-
   const MAX_ITERATIONS = 5;
   const MAX_TOOL_CALLS = 3;
   let toolCallCount = 0;
   const toolCache = new Map();
+
+  messages.push({ role: "user", content: message });
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
     try {
