@@ -26,9 +26,7 @@ export const postMistralResponse = async (req, res) => {
 
     const { input, userId } = req.body;
     const finalInput = `User: ${userId} ${input}`;
-    console.log(finalInput);
     const response = await AI_Response(finalInput);
-
     return res.status(200).json(JSON.parse(response));
   } catch (error) {
     return res.status(500).json({

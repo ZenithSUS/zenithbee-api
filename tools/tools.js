@@ -61,13 +61,14 @@ export const tools = [
         },
         required: ["userId", "length"],
       },
-    }
+    },
   },
   {
     type: "function",
     function: {
       name: "fetchProductByAttribute",
-      description: "Fetch a specific product from ZenithBee based on the user's requested attribute.",
+      description:
+        "Fetch a specific product from ZenithBee based on the user's requested attribute.",
       parameters: {
         type: "object",
         properties: {
@@ -77,7 +78,7 @@ export const tools = [
           },
         },
         required: ["value"],
-      }
-    }
-  }
+      },
+    },
+  },
 ];
