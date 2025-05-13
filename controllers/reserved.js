@@ -6,7 +6,7 @@ import {
 
 export const fetchReserved = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.params.id;
     const reserved = await getReserved(userId);
     res.status(200).json(reserved);
   } catch (error) {
@@ -21,7 +21,7 @@ export const fetchReserved = async (req, res) => {
 export const removeReserved = async (req, res) => {
   try {
     const reserveId = req.params.id;
-    
+
     await deleteReserved(reserveId);
     res.status(200).json({ message: "Reserved deleted" });
   } catch (error) {

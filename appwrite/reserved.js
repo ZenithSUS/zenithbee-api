@@ -29,6 +29,7 @@ export const getReserved = async (userId) => {
         [
           Query.limit(limit),
           Query.offset(offset),
+          Query.equal("user", userId),
           Query.orderDesc("$createdAt"),
         ]
       );
@@ -39,7 +40,7 @@ export const getReserved = async (userId) => {
       offset += limit;
     }
 
-    const allReservedByUser = allReserved.filter((r) => r.userId === userId);
+    const allReservedByUser = allReserved;
 
     const groupReserved = new Map();
 
@@ -110,11 +111,7 @@ export const getReservedByUserLimit = async (userId, limit) => {
     const { documents } = await databases.listDocuments(
       DATABASE_ID,
       RESERVED_ID,
-      [
-      
-        Query.orderDesc("$createdAt"),
-        Query.equal("user", userId),
-      ]
+      [Query.orderDesc("$createdAt"), Query.equal("user", userId)]
     );
 
     const groupReserved = new Map();
@@ -130,24 +127,24 @@ export const getReservedByUserLimit = async (userId, limit) => {
       groupReserved.get(r.reservedId).items.push(r);
     });
 
-    return Array.from(groupReserved.values()).map((group) => {
-      const totalPrice = group.items.reduce(
-        (sum, item) => sum + (parseFloat(item.price) || 0),
-        0
-      );
-      const totalQuantity = group.items.reduce(
-        (sum, item) => sum + (parseInt(item.quantity) || 0),
-        0
-      );
+    return Array.from(groupReserved.values())
+      .map((group) => {
+        const totalPrice = group.items.reduce(
+          (sum, item) => sum + (parseFloat(item.price) || 0),
+          0
+        );
+        const totalQuantity = group.items.reduce(
+          (sum, item) => sum + (parseInt(item.quantity) || 0),
+          0
+        );
 
-      return {
-        ...group,
-        totalPrice,
-        totalQuantity,
-      };
-    }).slice(0, limit);
-
-    
+        return {
+          ...group,
+          totalPrice,
+          totalQuantity,
+        };
+      })
+      .slice(0, limit);
   } catch (error) {
     console.error("Error getting single reserved:", error);
   }

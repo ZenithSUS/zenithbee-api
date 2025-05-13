@@ -19,7 +19,8 @@ export const addOrder = async (req, res) => {
 
 export const fetchOrders = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.params.id;
+    console.log(userId);
     const orders = await getOrdersByUser(userId);
     res.status(200).json(orders);
   } catch (error) {

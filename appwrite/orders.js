@@ -41,6 +41,7 @@ export const getOrdersByUser = async (userId) => {
         [
           Query.limit(limit),
           Query.offset(offset),
+          Query.equal("user", userId),
           Query.orderDesc("$createdAt"),
         ]
       );
@@ -51,7 +52,7 @@ export const getOrdersByUser = async (userId) => {
       offset += limit;
     }
 
-    const allOrdersByUser = allOrders.filter((o) => o.userId === userId);
+    const allOrdersByUser = allOrders;
 
     const groupOrders = new Map();
 
