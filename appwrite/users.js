@@ -46,16 +46,12 @@ export const getUsers = async () => {
 
 export const getUser = async (userId) => {
   try {
-    const { documents } = await databases.listDocuments(
-      DATABASE_ID,
-      USER_ID,
-      userId
-    );
+    const document = await databases.getDocument(DATABASE_ID, USER_ID, userId);
 
-    const { email, profileImage, address, $createdAt } = documents[0];
+    const { email, profileImage, address, $createdAt } = document;
 
     return {
-      fullname: `${documents[0].firstName} ${documents[0].middleName} ${documents[0].lastName}`,
+      fullname: `${document.firstName} ${document.middleName} ${document.lastName}`,
       email,
       address,
       profileImage,
@@ -68,12 +64,7 @@ export const getUser = async (userId) => {
 
 export const getUserAddresses = async (userId) => {
   try {
-    
-    const  document = await databases.getDocument(
-      DATABASE_ID,
-      USER_ID,
-      userId
-    );
+    const document = await databases.getDocument(DATABASE_ID, USER_ID, userId);
 
     const { address, email } = document;
 

@@ -47,7 +47,8 @@ export const fetchUsers = async (req, res) => {
 
 export const fetchUser = async (req, res) => {
   try {
-    const user = await getUser();
+    const userId = req.params.id;
+    const user = await getUser(userId);
     return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json({
